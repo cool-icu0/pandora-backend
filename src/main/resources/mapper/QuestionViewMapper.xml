@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cool.pandora.mapper.QuestionViewMapper">
+
+    <resultMap id="BaseResultMap" type="com.cool.pandora.model.entity.QuestionView">
+            <id property="viewId" column="viewId" jdbcType="INTEGER"/>
+            <result property="userId" column="userId" jdbcType="INTEGER"/>
+            <result property="questionId" column="questionId" jdbcType="INTEGER"/>
+            <result property="viewTimestamp" column="viewTimestamp" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        viewId,userId,questionId,
+        viewTimestamp
+    </sql>
+</mapper>
