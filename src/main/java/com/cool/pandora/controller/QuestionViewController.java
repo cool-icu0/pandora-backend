@@ -64,7 +64,7 @@ public class QuestionViewController {
         boolean result = questionViewService.save(questionView);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         // 返回新写入的数据 id
-        long newQuestionViewId = questionView.getId();
+        long newQuestionViewId = questionView.getViewId();
         return ResultUtils.success(newQuestionViewId);
     }
 
@@ -104,7 +104,7 @@ public class QuestionViewController {
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateQuestionView(@RequestBody QuestionViewUpdateRequest questionViewUpdateRequest) {
-        if (questionViewUpdateRequest == null || questionViewUpdateRequest.getId() <= 0) {
+        if (questionViewUpdateRequest == null || questionViewUpdateRequest.getViewId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // todo 在此处将实体类和 DTO 进行转换
@@ -113,7 +113,7 @@ public class QuestionViewController {
         // 数据校验
         questionViewService.validQuestionView(questionView, false);
         // 判断是否存在
-        long id = questionViewUpdateRequest.getId();
+        long id = questionViewUpdateRequest.getViewId();
         QuestionView oldQuestionView = questionViewService.getById(id);
         ThrowUtils.throwIf(oldQuestionView == null, ErrorCode.NOT_FOUND_ERROR);
         // 操作数据库
@@ -199,38 +199,6 @@ public class QuestionViewController {
                 questionViewService.getQueryWrapper(questionViewQueryRequest));
         // 获取封装类
         return ResultUtils.success(questionViewService.getQuestionViewVOPage(questionViewPage, request));
-    }
-
-    /**
-     * 编辑用户题目浏览记录（给用户使用）
-     *
-     * @param questionViewEditRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/edit")
-    public BaseResponse<Boolean> editQuestionView(@RequestBody QuestionViewEditRequest questionViewEditRequest, HttpServletRequest request) {
-        if (questionViewEditRequest == null || questionViewEditRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        // todo 在此处将实体类和 DTO 进行转换
-        QuestionView questionView = new QuestionView();
-        BeanUtils.copyProperties(questionViewEditRequest, questionView);
-        // 数据校验
-        questionViewService.validQuestionView(questionView, false);
-        User loginUser = userService.getLoginUser(request);
-        // 判断是否存在
-        long id = questionViewEditRequest.getId();
-        QuestionView oldQuestionView = questionViewService.getById(id);
-        ThrowUtils.throwIf(oldQuestionView == null, ErrorCode.NOT_FOUND_ERROR);
-        // 仅本人或管理员可编辑
-        if (!oldQuestionView.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
-        // 操作数据库
-        boolean result = questionViewService.updateById(questionView);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return ResultUtils.success(true);
     }
 
     // endregion

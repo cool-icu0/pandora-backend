@@ -25,12 +25,12 @@ public class QuestionViewQueryRequest extends PageRequest implements Serializabl
     /**
      * 访问用户Id
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 被浏览的面试题的唯一标识
      */
-    private Integer questionId;
+    private Long questionId;
 
     private static final long serialVersionUID = 1L;
 }

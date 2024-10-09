@@ -1,6 +1,8 @@
 package com.cool.pandora.model.vo;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.cool.pandora.model.entity.QuestionView;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -17,39 +19,24 @@ import java.util.List;
 public class QuestionViewVO implements Serializable {
 
     /**
-     * id
+     * 浏览记录Id
      */
-    private Long id;
+    private Integer viewId;
 
     /**
-     * 标题
+     * 访问用户Id
      */
-    private String title;
+    private Integer userId;
 
     /**
-     * 内容
+     * 被浏览的面试题的唯一标识
      */
-    private String content;
+    private Integer questionId;
 
     /**
-     * 创建用户 id
+     * 用户访问该题目的时间戳
      */
-    private Long userId;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 标签列表
-     */
-    private List<String> tagList;
+    private Date viewTimestamp;
 
     /**
      * 创建用户信息
@@ -68,8 +55,6 @@ public class QuestionViewVO implements Serializable {
         }
         QuestionView questionView = new QuestionView();
         BeanUtils.copyProperties(questionViewVO, questionView);
-        List<String> tagList = questionViewVO.getTagList();
-        questionView.setTags(JSONUtil.toJsonStr(tagList));
         return questionView;
     }
 
@@ -85,7 +70,6 @@ public class QuestionViewVO implements Serializable {
         }
         QuestionViewVO questionViewVO = new QuestionViewVO();
         BeanUtils.copyProperties(questionView, questionViewVO);
-        questionViewVO.setTagList(JSONUtil.toList(questionView.getTags(), String.class));
         return questionViewVO;
     }
 }
