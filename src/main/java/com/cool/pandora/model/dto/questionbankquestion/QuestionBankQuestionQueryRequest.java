@@ -1,11 +1,10 @@
-package com.cool.pandora.model.dto.questionBankQuestion;
+package com.cool.pandora.model.dto.questionbankquestion;
 
 import com.cool.pandora.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 查询题库题目关联请求

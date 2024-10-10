@@ -1,11 +1,8 @@
-package com.cool.pandora.model.dto.questionView;
+package com.cool.pandora.model.dto.questionview;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 编辑用户题目浏览记录请求

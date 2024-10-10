@@ -4,38 +4,42 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
- * 用户对题目浏览记录
- * @TableName question_view
+ * 题目点赞
+ * @TableName question_thumb
  */
-@TableName(value ="question_view")
+@TableName(value ="question_thumb")
 @Data
-public class QuestionView implements Serializable {
+public class QuestionThumb implements Serializable {
     /**
-     * 浏览记录Id
+     * id
      */
     @TableId(type = IdType.AUTO)
-    private Long viewId;
+    private Long id;
 
     /**
-     * 访问用户Id
-     */
-    private Long userId;
-
-    /**
-     * 被浏览的面试题的唯一标识
+     * 题目 id
      */
     private Long questionId;
 
     /**
-     * 用户访问该题目的时间戳
+     * 创建用户 id
      */
-    private Date viewTimestamp;
+    private Long userId;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

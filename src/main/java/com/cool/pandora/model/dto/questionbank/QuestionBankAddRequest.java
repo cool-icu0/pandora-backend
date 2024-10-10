@@ -1,21 +1,15 @@
-package com.cool.pandora.model.dto.questionBank;
+package com.cool.pandora.model.dto.questionbank;
 
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * 编辑题库请求
+ * 创建题库请求
  *
  */
 @Data
-public class QuestionBankEditRequest implements Serializable {
-
-    /**
-     * id
-     */
-    private Long id;
+public class QuestionBankAddRequest implements Serializable {
 
     /**
      * 标题

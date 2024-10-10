@@ -28,9 +28,9 @@ public class CodeGenerator {
     public static void main(String[] args) throws TemplateException, IOException {
         // 指定生成参数
         String packageName = "com.cool.pandora";
-        String dataName = "用户";
-        String dataKey = "user";
-        String upperDataKey = "User";
+        String dataName = "题目点赞";
+        String dataKey = "questionThumb";
+        String upperDataKey = "QuestionThumb";
 
         // 封装生成参数
         Map<String, Object> dataModel = new HashMap<>();

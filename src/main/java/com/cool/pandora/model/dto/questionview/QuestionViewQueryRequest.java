@@ -1,13 +1,10 @@
-package com.cool.pandora.model.dto.questionView;
+package com.cool.pandora.model.dto.questionview;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.cool.pandora.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 查询用户题目浏览记录请求

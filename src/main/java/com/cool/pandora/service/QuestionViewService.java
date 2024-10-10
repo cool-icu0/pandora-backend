@@ -3,7 +3,7 @@ package com.cool.pandora.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cool.pandora.model.dto.questionView.QuestionViewQueryRequest;
+import com.cool.pandora.model.dto.questionview.QuestionViewQueryRequest;
 import com.cool.pandora.model.entity.QuestionView;
 import com.cool.pandora.model.vo.QuestionViewVO;
 

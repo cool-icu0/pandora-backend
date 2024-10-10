@@ -1,9 +1,8 @@
-package com.cool.pandora.model.dto.questionView;
+package com.cool.pandora.model.dto.questionview;
 
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 创建用户题目浏览记录请求

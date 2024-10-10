@@ -1,9 +1,8 @@
-package com.cool.pandora.model.dto.questionBankQuestion;
+package com.cool.pandora.model.dto.questionbankquestion;
 
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 更新题库题目关联请求

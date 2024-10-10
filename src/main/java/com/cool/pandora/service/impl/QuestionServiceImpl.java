@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cool.pandora.common.ErrorCode;
 import com.cool.pandora.constant.CommonConstant;
 import com.cool.pandora.exception.ThrowUtils;
+import com.cool.pandora.mapper.QuestionFavourMapper;
 import com.cool.pandora.mapper.QuestionMapper;
+import com.cool.pandora.mapper.QuestionThumbMapper;
 import com.cool.pandora.model.dto.question.QuestionQueryRequest;
 import com.cool.pandora.model.entity.Question;
 import com.cool.pandora.model.entity.QuestionFavour;
@@ -41,6 +43,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Resource
     private UserService userService;
+    @Resource
+    private QuestionThumbMapper questionThumbMapper;
+    @Resource
+    private QuestionFavourMapper questionFavourMapper;
+
 
     /**
      * 校验数据
@@ -80,13 +87,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // todo 从对象中取值
         Long id = questionQueryRequest.getId();
         Long notId = questionQueryRequest.getNotId();
+        String searchText = questionQueryRequest.getSearchText();
         String title = questionQueryRequest.getTitle();
         String content = questionQueryRequest.getContent();
-        String searchText = questionQueryRequest.getSearchText();
         String sortField = questionQueryRequest.getSortField();
         String sortOrder = questionQueryRequest.getSortOrder();
         List<String> tagList = questionQueryRequest.getTags();
         Long userId = questionQueryRequest.getUserId();
+        String answer = questionQueryRequest.getAnswer();
         // todo 补充需要的查询条件
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
@@ -96,6 +104,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 模糊查询
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
+        queryWrapper.like(StringUtils.isNotBlank(answer), "answer", answer);
         // JSON 数组查询
         if (CollUtil.isNotEmpty(tagList)) {
             for (String tag : tagList) {
@@ -143,14 +152,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
             questionThumbQueryWrapper.in("questionId", questionId);
             questionThumbQueryWrapper.eq("userId", loginUser.getId());
+            // todo p0 补充代码,是否已经点赞和是否已经收藏
             QuestionThumb questionThumb = questionThumbMapper.selectOne(questionThumbQueryWrapper);
-            questionVO.setHasThumb(questionThumb != null);
+//            questionVO.setHasThumb(questionThumb != null);
             // 获取收藏
             QueryWrapper<QuestionFavour> questionFavourQueryWrapper = new QueryWrapper<>();
             questionFavourQueryWrapper.in("questionId", questionId);
             questionFavourQueryWrapper.eq("userId", loginUser.getId());
             QuestionFavour questionFavour = questionFavourMapper.selectOne(questionFavourQueryWrapper);
-            questionVO.setHasFavour(questionFavour != null);
+//            questionVO.setHasFavour(questionFavour != null);
         }
         // endregion
 
@@ -210,8 +220,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                 user = userIdUserListMap.get(userId).get(0);
             }
             questionVO.setUser(userService.getUserVO(user));
-            questionVO.setHasThumb(questionIdHasThumbMap.getOrDefault(questionVO.getId(), false));
-            questionVO.setHasFavour(questionIdHasFavourMap.getOrDefault(questionVO.getId(), false));
         });
         // endregion
 
