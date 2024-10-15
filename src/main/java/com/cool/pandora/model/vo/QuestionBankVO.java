@@ -1,5 +1,7 @@
 package com.cool.pandora.model.vo;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cool.pandora.model.entity.Question;
 import com.cool.pandora.model.entity.QuestionBank;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -89,6 +91,11 @@ public class QuestionBankVO implements Serializable {
      * 创建用户信息
      */
     private UserVO user;
+
+    /**
+     * 题库里的题目列表(分页)
+     */
+    Page<Question> questionPage;
 
     /**
      * 封装类转对象

@@ -1,5 +1,7 @@
 package com.cool.pandora.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cool.pandora.annotation.AuthCheck;
 import com.cool.pandora.common.BaseResponse;
@@ -11,6 +13,7 @@ import com.cool.pandora.exception.BusinessException;
 import com.cool.pandora.exception.ThrowUtils;
 import com.cool.pandora.model.dto.questionbankquestion.QuestionBankQuestionAddRequest;
 import com.cool.pandora.model.dto.questionbankquestion.QuestionBankQuestionQueryRequest;
+import com.cool.pandora.model.dto.questionbankquestion.QuestionBankQuestionRemoveRequest;
 import com.cool.pandora.model.dto.questionbankquestion.QuestionBankQuestionUpdateRequest;
 import com.cool.pandora.model.entity.QuestionBankQuestion;
 import com.cool.pandora.model.entity.User;
@@ -49,6 +52,7 @@ public class QuestionBankQuestionController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Long> addQuestionBankQuestion(@RequestBody QuestionBankQuestionAddRequest questionBankQuestionAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(questionBankQuestionAddRequest == null, ErrorCode.PARAMS_ERROR);
         // todo 在此处将实体类和 DTO 进行转换
@@ -93,6 +97,31 @@ public class QuestionBankQuestionController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
+
+    /**
+     * 移除题库题目关联（仅管理员可用）
+     * @param questionBankQuestionRemoveRequest
+     * @return
+     */
+
+    @PostMapping("/remove")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> removeQuestionBankQuestion(
+            @RequestBody QuestionBankQuestionRemoveRequest questionBankQuestionRemoveRequest
+    ) {
+        // 参数校验
+        ThrowUtils.throwIf(questionBankQuestionRemoveRequest == null, ErrorCode.PARAMS_ERROR);
+        Long questionBankId = questionBankQuestionRemoveRequest.getQuestionBankId();
+        Long questionId = questionBankQuestionRemoveRequest.getQuestionId();
+        ThrowUtils.throwIf(questionBankId == null || questionId == null, ErrorCode.PARAMS_ERROR);
+        // 构造查询
+        LambdaQueryWrapper<QuestionBankQuestion> lambdaQueryWrapper = Wrappers.lambdaQuery(QuestionBankQuestion.class)
+                .eq(QuestionBankQuestion::getQuestionId, questionId)
+                .eq(QuestionBankQuestion::getQuestionBankId, questionBankId);
+        boolean result = questionBankQuestionService.remove(lambdaQueryWrapper);
+        return ResultUtils.success(result);
+    }
+
 
     /**
      * 更新题库题目关联（仅管理员可用）
