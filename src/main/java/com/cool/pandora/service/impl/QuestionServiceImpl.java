@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 
 /**
  * 题目服务实现
- *
  */
 @Service
 @Slf4j
@@ -199,7 +198,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         Map<Long, Boolean> questionIdHasFavourMap = new HashMap<>();
         User loginUser = userService.getLoginUserPermitNull(request);
         if (loginUser != null) {
-            Set<Long> questionIdSet = questionList.stream().map(Question::getId).collect(Collectors.toSet());
+            Set<Long> questionIdSet = questionList.stream().map(Question::getId)
+                    .collect(Collectors.toSet());
             loginUser = userService.getLoginUser(request);
             // 获取点赞
             QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
@@ -231,6 +231,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     /**
      * 根据查询条件，获取题目分页列表(如果有题库id，查询题库数据)
+     *
      * @param questionQueryRequest
      * @return
      */
@@ -254,6 +255,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                         .collect(Collectors.toSet());
                 // 复用原有题目表的查询条件
                 queryWrapper.in("id", questionIdSet);
+            } else {
+                return new Page<>(current, size, 0);
             }
         }
         // 查询数据库
