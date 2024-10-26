@@ -1,48 +1,48 @@
-version: '3'
+version: '4.31'
 services:
   mysql:
-    image: mysql:8.0.12
-    container_name: pandora-mysql
+    image: mysql:8.0.40-debian
+    container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: codepandora
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
     volumes:
-      - pandora-mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
 
   redis:
     image: redis:latest
-    container_name: pandora-redis
+    container_name: redis
     ports:
       - "6379:6379"
     volumes:
-      - pandora-redis-data:/data
+      - redis-data:/data
 
   elasticsearch:
     image: elasticsearch:7.17.23
-    container_name: pandora-elasticsearch
+    container_name: elasticsearch
     environment:
       - discovery.type=single-node
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - pandora-es-data:/usr/share/elasticsearch/data
+      - es-data:/usr/share/elasticsearch/data
 
   kibana:
     image: kibana:7.17.23
-    container_name: pandora-kibana
+    container_name: kibana
     environment:
-      - ELASTICSEARCH_URL=http://pandora-elasticsearch:9200
+      - I18N_LOCALE=zh-CN  # 设置Kibana的中文选项
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
 
 volumes:
-  pandora-mysql-data:
-  pandora-redis-data:
-  pandora-es-data:
+  mysql-data:
+  redis-data:
+  es-data:
