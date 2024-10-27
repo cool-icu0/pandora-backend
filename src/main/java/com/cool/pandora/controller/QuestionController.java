@@ -247,5 +247,22 @@ public class QuestionController {
         return ResultUtils.success(true);
     }
 
+    /**
+     * 分页搜索问题并返回问题视图对象列表
+     *
+     * @param questionQueryRequest 查询请求对象，包含分页和搜索条件
+     * @param request              HTTP 请求对象
+     * @return 分页的问题视图对象列表
+     */
+    @PostMapping("/search/page/vo")
+    public BaseResponse<Page<QuestionVO>> searchQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
+                                                                 HttpServletRequest request) {
+        long size = questionQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 200, ErrorCode.PARAMS_ERROR);
+        Page<Question> questionPage = questionService.searchFromEs(questionQueryRequest);
+        return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
+    }
+
     // endregion
 }
