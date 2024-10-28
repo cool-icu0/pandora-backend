@@ -11,11 +11,13 @@ import com.cool.pandora.common.ResultUtils;
 import com.cool.pandora.constant.UserConstant;
 import com.cool.pandora.exception.BusinessException;
 import com.cool.pandora.exception.ThrowUtils;
+import com.cool.pandora.model.dto.question.QuestionBatchDeleteRequest;
 import com.cool.pandora.model.dto.questionbankquestion.*;
 import com.cool.pandora.model.entity.QuestionBankQuestion;
 import com.cool.pandora.model.entity.User;
 import com.cool.pandora.model.vo.QuestionBankQuestionVO;
 import com.cool.pandora.service.QuestionBankQuestionService;
+import com.cool.pandora.service.QuestionService;
 import com.cool.pandora.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +41,8 @@ public class QuestionBankQuestionController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private QuestionService questionService;
 
     // region 增删改查
 
@@ -247,7 +251,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 批量删除题目到题库（仅管理员可用）
+     * 批量从题库中移除题目（仅管理员可用）
      * @param questionBankQuestionBatchRemoveRequest
      * @param request
      * @return
@@ -264,5 +268,21 @@ public class QuestionBankQuestionController {
         questionBankQuestionService.batchRemoveQuestionFromBank(questionIdList,questionBankId);
         return ResultUtils.success(true);
     }
+
+    /**
+     * 批量删除题目（仅管理员可用）
+     * @param questionBatchDeleteRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/delete/batch")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> batchDeleteQuestions(@RequestBody QuestionBatchDeleteRequest questionBatchDeleteRequest,
+                                                      HttpServletRequest request) {
+        ThrowUtils.throwIf(questionBatchDeleteRequest == null, ErrorCode.PARAMS_ERROR);
+        questionService.batchDeleteQuestions(questionBatchDeleteRequest.getQuestionIdList());
+        return ResultUtils.success(true);
+    }
+
     // endregion
 }

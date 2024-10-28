@@ -217,6 +217,11 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
 
     }
 
+    /**
+     * 批量从题库中移除题目（仅管理员可用）
+     * @param questionIdList
+     * @param questionBankId
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchRemoveQuestionFromBank(List<Long> questionIdList, Long questionBankId) {
