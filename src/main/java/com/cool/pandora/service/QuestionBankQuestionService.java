@@ -7,6 +7,7 @@ import com.cool.pandora.model.dto.questionbankquestion.QuestionBankQuestionQuery
 import com.cool.pandora.model.entity.QuestionBankQuestion;
 import com.cool.pandora.model.entity.User;
 import com.cool.pandora.model.vo.QuestionBankQuestionVO;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -58,7 +59,15 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
      * @param questionBankId
      * @param loginUser
      */
-    void batchAddQuestionToBank(List<Long> questionIdList, Long questionBankId, User loginUser);
+    void batchAddQuestionToBank(List<Long> questionIdList, long questionBankId, User loginUser);
+
+    /**
+     * 批量添加题目到题库（事务，仅供内部调用）
+     *
+     * @param questionBankQuestions
+     */
+    @Transactional(rollbackFor = Exception.class)
+    void batchAddQuestionsToBankInner(List<QuestionBankQuestion> questionBankQuestions);
 
     /**
      * 批量从题库中移除题目（仅管理员可用）
