@@ -45,7 +45,19 @@ services:
     depends_on:
       - elasticsearch
 
+  etcd:
+    image: bitnami/etcd:3.5.15
+    container_name: etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    volumes:
+      - etcd-data:/etcd-data
+
 volumes:
   mysql-data:
   redis-data:
   es-data:
+  etcd-data:
