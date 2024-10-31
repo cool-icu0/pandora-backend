@@ -56,6 +56,16 @@ services:
     volumes:
       - etcd-data:/etcd-data
 
+  sentinel-dashboard:
+    image: bladex/sentinel-dashboard:1.8.6
+    container_name: sentinel-dashboard
+    restart: always
+    ports:
+      - "8858:8858"  # 更新后的端口
+      - "8719:8719"
+    volumes:
+      - ./root/logs:/root/logs
+
 volumes:
   mysql-data:
   redis-data:

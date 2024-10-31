@@ -1,5 +1,6 @@
 package com.cool.pandora.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cool.pandora.annotation.AuthCheck;
 import com.cool.pandora.common.BaseResponse;
@@ -203,6 +204,9 @@ public class QuestionBankController {
      * @return
      */
     @PostMapping("/list/page/vo")
+    @SentinelResource(value = "questionBankListByPage",
+            blockHandler = "handleBlockException",
+            fallback = "handleFallback")
     public BaseResponse<Page<QuestionBankVO>> listQuestionBankVOByPage(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
                                                                HttpServletRequest request) {
         long current = questionBankQueryRequest.getCurrent();
