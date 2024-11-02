@@ -22,6 +22,7 @@ import com.cool.pandora.model.entity.QuestionBank;
 import com.cool.pandora.model.entity.User;
 import com.cool.pandora.model.vo.QuestionBankVO;
 import com.cool.pandora.model.vo.QuestionVO;
+import com.cool.pandora.sentinel.SentinelConstant;
 import com.cool.pandora.service.QuestionBankService;
 import com.cool.pandora.service.QuestionService;
 import com.cool.pandora.service.UserService;
@@ -206,7 +207,7 @@ public class QuestionBankController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    @SentinelResource(value = "listQuestionBankVOByPage",
+    @SentinelResource(value = SentinelConstant.listQuestionBankVOByPage,
             blockHandler = "handleBlockException",
             fallback = "handleFallback")
     public BaseResponse<Page<QuestionBankVO>> listQuestionBankVOByPage(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
@@ -222,27 +223,27 @@ public class QuestionBankController {
         return ResultUtils.success(questionBankService.getQuestionBankVOPage(questionBankPage, request));
     }
     /**
-     * listQuestionBankVOByPage 降级操作：直接返回本地数据
+     * listQuestionBankVOByPage 流控操作
+     * 限流：提示“系统压力过大，请耐心等待”
+     * 熔断：执行降级操作
+     */
+    public BaseResponse<Page<QuestionBankVO>> handleBlockException(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
+                                                                   HttpServletRequest request, BlockException ex) {
+        // 降级操作
+        if (ex instanceof DegradeException) {
+            return handleFallback(questionBankQueryRequest, request, ex);
+        }
+        // 限流操作
+        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "系统压力过大，请耐心等待");
+    }
+    /**
+     * listQuestionBankVOByPage 降级操作：直接返回本地数据（此处为了方便演示，写在同一个类中）
      */
     public BaseResponse<Page<QuestionBankVO>> handleFallback(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
                                                              HttpServletRequest request, Throwable ex) {
         // 可以返回本地数据或空数据
-        // todo 这里需要加一个 兜底方案，比如从缓存中读取数据
+        System.out.println("系统异常，降级操作");
         return ResultUtils.success(null);
-    }
-
-    /**
-     * listQuestionBankVOByPage 流控操作
-     * 限流：提示“系统压力过大，请耐心等待”
-     */
-    public BaseResponse<Page<QuestionBankVO>> handleBlockException(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
-                                                                   HttpServletRequest request, BlockException ex) {
-        //降级操作
-        if (ex instanceof DegradeException){
-            return handleFallback(questionBankQueryRequest, request, ex); // 降级操作
-        }
-        // 限流操作
-        return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "系统压力过大，请耐心等待");
     }
 
 

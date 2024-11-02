@@ -23,6 +23,7 @@ import com.cool.pandora.model.dto.question.QuestionUpdateRequest;
 import com.cool.pandora.model.entity.Question;
 import com.cool.pandora.model.entity.User;
 import com.cool.pandora.model.vo.QuestionVO;
+import com.cool.pandora.sentinel.SentinelConstant;
 import com.cool.pandora.service.QuestionService;
 import com.cool.pandora.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -192,7 +193,7 @@ public class QuestionController {
     }
 
     /**
-     * 分页获取题目列表（封装类）
+     * 分页获取题目列表（封装类 - 限流版）
      *
      * @param questionQueryRequest
      * @param request
@@ -200,29 +201,30 @@ public class QuestionController {
      */
     @PostMapping("/list/page/vo/sentinel")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPageSentinel(@RequestBody QuestionQueryRequest questionQueryRequest,
-                                                               HttpServletRequest request) {
-        long current = questionQueryRequest.getCurrent();
+                                                                       HttpServletRequest request) {
+        ThrowUtils.throwIf(questionQueryRequest == null, ErrorCode.PARAMS_ERROR);
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 基于 IP 限流
         String remoteAddr = request.getRemoteAddr();
         Entry entry = null;
-        try  {
-            entry = SphU.entry("listQuestionVOByPage", EntryType.IN, 1, remoteAddr);
+        try {
+            entry = SphU.entry(SentinelConstant.listQuestionVOByPage, EntryType.IN, 1, remoteAddr);
             // 被保护的业务逻辑
             // 查询数据库
             Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
             // 获取封装类
             return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
         } catch (Throwable ex) {
-            if (!BlockException.isBlockException(ex)){
+            // 业务异常
+            if (!BlockException.isBlockException(ex)) {
                 Tracer.trace(ex);
                 return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "系统错误");
             }
-            // 资源访问阻止，被限流或被降级
+            // 降级操作
             if (ex instanceof DegradeException) {
-                return handleFallback(questionQueryRequest, request, (BlockException) ex);
+                return handleFallback(questionQueryRequest, request, ex);
             }
             // 限流操作
             return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "访问过于频繁，请稍后再试");
@@ -237,7 +239,7 @@ public class QuestionController {
      */
     public BaseResponse<Page<QuestionVO>> handleFallback(QuestionQueryRequest questionQueryRequest,
                                                         HttpServletRequest request,
-                                                        BlockException ex) {
+                                                        Throwable ex) {
         return ResultUtils.success(null);
     }
 
