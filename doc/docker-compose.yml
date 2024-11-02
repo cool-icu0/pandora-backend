@@ -55,11 +55,27 @@ services:
       - "2380:2380"
     volumes:
       - etcd-data:/etcd-data
+  nacos:
+    image: nacos/nacos-server:v2.2.0
+    container_name: nacos
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    environment:
+      - MODE=standalone
+      - PREFER_HOST_MODE=hostname
+      - NACOS_USERNAME=nacos
+      - NACOS_PASSWORD=nacos
+    volumes:
+      - ./nacos-logs:/home/nacos/logs
 
   sentinel-dashboard:
     image: bladex/sentinel-dashboard:1.8.6
     container_name: sentinel-dashboard
     restart: always
+#    environment:
+#      - PASSWORD=sentinel
+#      - USERNAME=sentinel
     ports:
       - "8858:8858"  # 更新后的端口
       - "8719:8719"
@@ -71,3 +87,4 @@ volumes:
   redis-data:
   es-data:
   etcd-data:
+  nacos-logs:
