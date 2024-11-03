@@ -1,5 +1,6 @@
 package com.cool.pandora.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cool.pandora.annotation.AuthCheck;
 import com.cool.pandora.common.BaseResponse;
@@ -101,7 +102,7 @@ public class QuestionViewController {
      * @return
      */
     @PostMapping("/update")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateQuestionView(@RequestBody QuestionViewUpdateRequest questionViewUpdateRequest) {
         if (questionViewUpdateRequest == null || questionViewUpdateRequest.getViewId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -144,7 +145,7 @@ public class QuestionViewController {
      * @return
      */
     @PostMapping("/list/page")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<QuestionView>> listQuestionViewByPage(@RequestBody QuestionViewQueryRequest questionViewQueryRequest) {
         long current = questionViewQueryRequest.getCurrent();
         long size = questionViewQueryRequest.getPageSize();
