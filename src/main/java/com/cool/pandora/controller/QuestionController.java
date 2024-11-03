@@ -17,6 +17,7 @@ import com.cool.pandora.common.ResultUtils;
 import com.cool.pandora.constant.UserConstant;
 import com.cool.pandora.exception.BusinessException;
 import com.cool.pandora.exception.ThrowUtils;
+import com.cool.pandora.manager.CrawlerDetectManager;
 import com.cool.pandora.model.dto.question.QuestionAddRequest;
 import com.cool.pandora.model.dto.question.QuestionEditRequest;
 import com.cool.pandora.model.dto.question.QuestionQueryRequest;
@@ -151,6 +152,13 @@ public class QuestionController {
     @GetMapping("/get/vo")
     public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
+        //检测和处置爬虫
+        User loginUser = userService.getLoginUser(request);
+        //引入爬虫检测类
+        CrawlerDetectManager crawlerDetectManager = new CrawlerDetectManager();
+        crawlerDetectManager.crawlerDetect(loginUser.getId());
+        //敏感内容打印日志，记录用户访问内容
+        log.info("用户Id为：{}访问了题目id为：{}", loginUser.getId(), id);
         // 查询数据库
         Question question = questionService.getById(id);
         ThrowUtils.throwIf(question == null, ErrorCode.NOT_FOUND_ERROR);

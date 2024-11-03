@@ -66,8 +66,8 @@ services:
       - PREFER_HOST_MODE=hostname
       - NACOS_USERNAME=nacos
       - NACOS_PASSWORD=nacos
-    volumes:
-      - ./nacos-logs:/home/nacos/logs
+#    volumes:
+#      - ./nacos-logs:/home/nacos/logs
 
   sentinel-dashboard:
     image: bladex/sentinel-dashboard:1.8.6
@@ -87,4 +87,4 @@ volumes:
   redis-data:
   es-data:
   etcd-data:
-  nacos-logs:
+#  nacos-logs:
