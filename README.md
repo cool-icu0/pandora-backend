@@ -6,7 +6,7 @@
 <h1 align="center">潘多拉魔盒 - 面试刷题平台</h1>
 <p align="center"><strong>
     基于Next.js + Spring Boot + Redis + MySQL + Elasticsearch 构建的面试刷题平台。
-    致力于面试刷题，帮助每个人成为八股大师🚀。。
+    <br>致力于面试刷题，帮助每个人成为八股大师🚀。。
     <br><em>持续更新中～</em>
 </strong></p>
 <div align="center">
