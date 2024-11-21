@@ -1,6 +1,6 @@
 <p align="center">
     <a href="" target="_blank">
-      <img src="./doc/images/logo.png" width="280" />
+      <img src="./doc/images/icon.png" width="280" />
     </a>
 </p>
 <h1 align="center">潘多拉魔盒 - 面试刷题平台</h1>
